@@ -1,7 +1,9 @@
 import express from "express"
 import client from "prom-client"
 import responseTime from "response-time"
+import LokiTransport from "winston-loki"
 import { doSomeHeavyTask } from "./util.js"
+import { createLogger, transports } from "winston"
 
 const app = express()
 
@@ -25,18 +27,32 @@ app.use(responseTime((req, res, time)=>{
     }).observe(time)    
 }))
 
+
+/*In this I am running loki server locally, Loki is used to collect the log from our running server */
+const options = {
+    transports:[
+        new LokiTransport({
+            host: "http://127.0.0.1:3100"
+        })
+    ]
+}
+
+const logger = createLogger(options)
+
 app.get("/", (req, res)=>{
     return res.status(200).json({status: "success", message: "Hello from server"})
 })
 
 app.get("/slow", async (req, res)=>{
     try{
+        logger.info("Req came on /slow route")
         const timeTaken = await doSomeHeavyTask();
         return res.status(200).json({
             status: "Success",
             message: `Time taken ${timeTaken}ms`
         })
     }catch(error){
+        logger.error(error.message)
         res.status(500).json({message: "Internal server error"})
     }
 })
