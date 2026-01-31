@@ -1,4 +1,4 @@
-# Hands-on Observability 🚀
+# Hands-on Observability
 
 This repository is part of my **learning phase on Observability**.  
 The goal of this project is to get **practical, hands-on experience** with core observability tools like **Prometheus** and **Grafana**, and to understand how real systems are monitored in production — not just theory.
@@ -139,6 +139,43 @@ For the complete setup, service configuration, ports, and networking details, pl
 - Docker / Docker Compose
 
 ---
+## Setup Instructions
+
+Follow the steps below to run the project and observability stack locally.
+
+### 1. Clone the Repository
+```bash
+git clone https://github.com/08abhinav/hands-on-observability.git
+cd hands-on-observability
+```
+
+### 2. Install Dependencies
+```bash
+npm install
+```
+
+### 3. Update Prometheus Configuration
+Open the prometheus-config.yml file and update your local machine IP in the targets section.
+
+> targets: ["<YOUR_IP>:<APP_PORT>"]
+
+### 4. Verify Docker Compose Configuration
+
+Check the docker-compose.yml file to review:
+- Prometheus service configuration
+- Grafana service configuration
+- Port mappings and volumes
+- Make changes only if customization is required.
+
+### 5. Run the application
+```bash
+npm run dev
+```
+
+### 6. Start Prometheus and Grafana
+```bash
+docker compose up
+```
 
 ## Learning Outcome
 
@@ -149,4 +186,6 @@ By working on this project, I understand:
 - How Grafana visualizes system behavior
 - How slow systems look **from the outside**
 
+## PS
+- If you find this project helpful or interesting, **give it a ⭐** — it really helps!
 ---
