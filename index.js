@@ -1,19 +1,38 @@
 import express from "express"
 import client from "prom-client"
+import responseTime from "response-time"
 import { doSomeHeavyTask } from "./util.js"
 
 const app = express()
+
 const collectMetrics = client.collectDefaultMetrics;
 collectMetrics({register: client.register})
 
+/*In this reqResTime I am creating custom metrics and using a middleware responseTime of each request
+ */
+const reqResTime = new client.Histogram({
+    name: 'http_express_req_res_time', //name of our metrics that you can checkout in /metrics route
+    help: 'This tells how much time is taken by a request and response', // giving a descripiton
+    labelNames: ['method', 'route', 'status'], // these labels will help in grafana dashboard for filtering out
+    buckets: [1, 5, 10, 50, 100, 150, 200, 400, 500, 800, 1000, 2000] // bucket for timestamps
+})  
+
+app.use(responseTime((req, res, time)=>{
+    reqResTime.labels({
+        method: req.method,
+        route: req.url,
+        status: req.status
+    }).observe(time)    
+}))
+
 app.get("/", (req, res)=>{
-    return res.json({status: "success", message: "Hello from server"})
+    return res.status(200).json({status: "success", message: "Hello from server"})
 })
 
 app.get("/slow", async (req, res)=>{
     try{
         const timeTaken = await doSomeHeavyTask();
-        return res.json({
+        return res.status(200).json({
             status: "Success",
             message: `Time taken ${timeTaken}ms`
         })
