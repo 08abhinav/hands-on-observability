@@ -1,7 +1,7 @@
 # Hands-on Observability
 
 This repository is part of my **learning phase on Observability**.  
-The goal of this project is to get **practical, hands-on experience** with core observability tools like **Prometheus** and **Grafana**, and to understand how real systems are monitored in production — not just theory.
+The goal of this project is to get **practical, hands-on experience** with core observability tools like **Prometheus** and **Grafana**, and to understand how real systems are monitored in production.
 
 ---
 
